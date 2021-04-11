@@ -10,9 +10,6 @@ console.log(pendula.coordinates());
 
 pendula.time_step(1/120);
 
-// const pendulum1 = Pendulum.new(n, 0.5*Math.PI);
-// const pendulum2 = Pendulum.new(n-1, 0.5*Math.PI);
-
 var svg = d3.select("svg");
 var width = +svg.attr("width");
 var height = +svg.attr("height");
@@ -78,4 +75,3 @@ var draw = function(coords) {
 }
 
 var run = setInterval(() => { update() }, 1000/120);
-//update();

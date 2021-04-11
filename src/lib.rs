@@ -91,18 +91,6 @@ impl Pendulum {
 
         coords
     }
-
-    // pub fn time_step(&mut self, dt: f64) {
-
-    //     let k1 = lagrange_rhs((&self.thetas, &self.omegas));
-    //     let k2 = lagrange_rhs((&(&self.thetas + 0.5 * dt * &k1.0), &(&self.omegas + 0.5 * dt * &k1.1)));
-    //     let k3 = lagrange_rhs((&(&self.thetas + 0.5 * dt * &k2.0), &(&self.omegas + 0.5 * dt * &k2.1)));
-    //     let k4 = lagrange_rhs((&(&self.thetas + 1.0 * dt * &k3.0), &(&self.omegas + 1.0 * dt * &k3.1)));
-
-    //     self.thetas = &self.thetas + (k1.0 + 2.*k2.0 + 2.*k3.0 + k4.0) * dt / 6.;
-    //     self.omegas = &self.omegas + (k1.1 + 2.*k2.1 + 2.*k3.1 + k4.1) * dt / 6.;
-    // }
-
 }
 
 #[wasm_bindgen]
