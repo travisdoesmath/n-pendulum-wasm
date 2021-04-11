@@ -3,7 +3,46 @@
   <head>
     <meta charset="utf-8">
     <title>n-pendulum simulator in Rust + WebAssembly</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        margin: 0 auto 4em auto;
+        tab-size: 2;
+        -webkit-text-size-adjust: none;
+      }
+
+    .column {
+        max-width: 960px;
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 0 10px;
+    }
+
+    h1 {
+        font-size: 46px;
+        font-weight: 500;
+        letter-spacing: -1px;
+        margin: 0.1em 0;
+    } 
+
+    h2 {
+        margin-top: 2em;
+    }
+      
+    h1, h2 {
+        text-rendering: optimizeLegibility;
+    }
+
+    .shaft {
+        stroke-width: 2px;
+    }
+
+    svg {
+        border: 1px solid black;
+    }
+
+    </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
     </head>
   <body>
@@ -22,5 +61,3 @@
     <script src="./bootstrap.js"></script>
   </body>
 </html>
-
-!
