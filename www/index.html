@@ -42,15 +42,19 @@
         border: 1px solid black;
     }
 
+    span {
+      margin-right:10px;
+    }
+
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.16.0/d3.min.js"></script> -->
     </head>
   <body>
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <div class="column">
       <h1>(n>1)-tuple pendulums are chaotic</h1>
       <h2>(in Rust + WebAssembly)</h2>
-      <svg width="960" height="500"></svg>
+      <svg id="svg" width="960" height="500"></svg>
       <p>A remake of <a href="https://bl.ocks.org/travisdoesmath/1206c28b72589d7269b670df05730705">this D3 gist</a> moving the math into wasm for speed (and an excuse to learn
         <a href="https://rustwasm.github.io/docs/book/">Rust 🦀 and WebAssembly 🕸</a>. The n-tuple pendulum simulator uses the lagrangian formulation of the n-tuple pendulum
         (with much help from <a href="https://diego.assencio.com/?index=1500c66ae7ab27bb0106467c68feebc6">Diego Assencio's blog post</a>), and is solved numerically with  

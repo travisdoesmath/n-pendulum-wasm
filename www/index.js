@@ -1,77 +1,94 @@
 import { Pendula } from "wasm-pendulum";
 import { memory } from "wasm-pendulum/n_pendulum_wasm_bg";
+import { scaleLinear, scaleSequential } from "d3-scale";
+import { interpolateRainbow } from "d3-scale-chromatic";
 
-let ns = [...Array(10).keys()].map(x => x < 2 ? 1 : 2*x-1);
+
+let svgNS = "http://www.w3.org/2000/svg";
+
+let ns = [...Array(10).keys()].map(x => 2*x + 1);
+//let ns = [3, 2, 10];
+console.log(ns);
 let nPendulums = ns.length;
 
 const pendula = new Pendula(ns, 0.5*Math.PI);
-console.log(pendula);
-console.log(pendula.coordinates());
 
-pendula.time_step(1/120);
+let svg = document.getElementById('svg');
+let width = +svg.getAttribute('width');
+let height = +svg.getAttribute('height');
+let g = document.createElementNS(svgNS, 'g');
+    g.setAttribute('transform', `translate(${0.5*width},${0.5*height})`)
+svg.appendChild(g);
 
-var svg = d3.select("svg");
-var width = +svg.attr("width");
-var height = +svg.attr("height");
-var g = svg.append("g").attr("transform", "translate(" + width*.5 + "," + height*.5 + ")");
-var color = d3.scaleSequential(d3.interpolateRainbow).domain([0, nPendulums]);
+var scale = scaleLinear().domain([0,1]).range([0,200])
+var color = scaleSequential(interpolateRainbow).domain([0, nPendulums]);
 
-var scale = d3.scaleLinear().domain([0,1]).range([0,200])
+const partialSums = arr => {
+    let s = 0;
+    return arr.map(x => s += x);
+}
+let nSums = partialSums(ns)
+let nSum = nSums[nSums.length - 1];
 
-var update = function() {
-    pendula.time_step(1/120);
+let bobs = [];
+let shafts = [];
 
-    let coordsPtr = pendula.coordinates();
-    let coordsArray = new Float64Array(memory.buffer, coordsPtr, 2 * d3.sum(ns));
+let pendulumIndex = 0;
 
-    let coords = [];
+async function init() {
+    let coordsPtr = await pendula.time_step(1/60);
+    let coordsArray = new Float64Array(memory.buffer, coordsPtr, 2 * nSum);
+    for (let i = 0; i < nSum; i++) {
+        let x = scale(coordsArray[2*i]);
+        let y = scale(coordsArray[2*i + 1]);
 
-    let ptr = 0;
-
-    ns.forEach(n => {
-        let coords_ = [];
-        let x = 0;
-        let y = 0;
-        for (let i = ptr; i < ptr + 2*n; i += 2) {
-            coords_.push({
-                x1: x,
-                y1: y,
-                x2: coordsArray[i],
-                y2: coordsArray[i + 1],
-            })
-            x = coordsArray[i];
-            y = coordsArray[i + 1];
+        let shaft = document.createElementNS(svgNS, 'line');
+        if (nSums.includes(i)) {
+            pendulumIndex++;
         }
-        ptr = ptr + 2*n;
-        coords.push(coords_);
-    })
+        shaft.setAttribute('stroke', color(pendulumIndex));
+        shaft.classList.add('shaft')
+        g.appendChild(shaft);
+        shafts.push(shaft);
+    
+        let bob = document.createElementNS(svgNS, 'circle');
+        // bob.setAttribute('cx', x);
+        // bob.setAttribute('cy', y);
+        bob.setAttribute('r', 3);
+        bob.classList.add('bob');
+        bob.setAttribute('fill', color(pendulumIndex));
+        g.appendChild(bob);
+        bobs.push(bob);
+    } 
+}   
 
-    draw(coords.slice(2, ns.length));
+async function update() {
+    let coordsPtr = await pendula.time_step(1/60);
+    let coordsArray = new Float64Array(memory.buffer, coordsPtr, 2 * nSum);
+
+    for (let i = 0; i < nSum; i++) {
+        let x = scale(coordsArray[2*i]);
+        let y = scale(coordsArray[2*i + 1]);
+
+        let shaft = shafts[i];
+        if (i == 0 || nSums.includes(i)) {
+            // console.log(i, nSums);
+            shaft.setAttribute('x1', 0);
+            shaft.setAttribute('y1', 0);
+        } else {
+            shaft.setAttribute('x1', scale(coordsArray[2*i - 2]));
+            shaft.setAttribute('y1', scale(coordsArray[2*i - 1]));
+        }
+
+        shaft.setAttribute('x2', x);
+        shaft.setAttribute('y2', y);
+    
+        let bob = bobs[i];
+        bob.setAttribute('cx', x);
+        bob.setAttribute('cy', y);
+    }
+
+    requestAnimationFrame(update);
 }
 
-var draw = function(coords) {
-	var pendulum = g.selectAll(".pendulum").data(coords, (d, i) => i)
-	
-	pendulum.enter()
-		.append("g").attr("class","pendulum")
-		.attr('stroke', (d, i) => color(i))
-		.attr('fill', (d, i) => color(i))
-
-	var shafts = pendulum.selectAll('.shaft').data((d, i) => d)
-
-		shafts.enter().append('line').attr("class", "shaft")
-		.merge(shafts)
-		.attr("x1", d => scale(d.x1))
-		.attr("y1", d => scale(d.y1))	
-		.attr("x2", d => scale(d.x2))
-		.attr("y2", d => scale(d.y2))	
-
-	var bobs = pendulum.selectAll('.bob').data(d => d)
-		
-	bobs.enter().append('circle').attr('class', 'bob').attr('r',3)
-	.merge(bobs)
-		.attr("cx", d => scale(d.x2))
-		.attr("cy", d => scale(d.y2))
-}
-
-var run = setInterval(() => { update() }, 1000/120);
+init().then(requestAnimationFrame(update))

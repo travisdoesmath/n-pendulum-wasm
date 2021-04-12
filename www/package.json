@@ -27,6 +27,8 @@
   },
   "homepage": "https://github.com/rustwasm/create-wasm-app#readme",
   "dependencies": {
+    "d3-scale": "^3.2.4",
+    "d3-scale-chromatic": "^2.0.0",
     "wasm-pendulum": "file:../pkg"
   },
   "devDependencies": {
