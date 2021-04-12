@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>n-pendulum simulator in Rust + WebAssembly</title>
+    <style>
+      body {
+        font-family: "Helvetica Neue", Helvetica, sans-serif;
+        margin: 0 auto 4em auto;
+        tab-size: 2;
+        -webkit-text-size-adjust: none;
+      }
+
+    .column {
+        max-width: 960px;
+        position: relative;
+        display: block;
+        margin: 0 auto;
+        padding: 0 10px;
+    }
+
+    h1 {
+        font-size: 46px;
+        font-weight: 500;
+        letter-spacing: -1px;
+        margin: 0.1em 0;
+    } 
+
+    h2 {
+        margin-top: 2em;
+    }
+      
+    h1, h2 {
+        text-rendering: optimizeLegibility;
+    }
+
+    canvas {
+        border: 1px solid black;
+    }
+
+    </style>
+    </head>
+  <body>
+    <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
+    <div class="column">
+      <h1>(n>1)-tuple pendulums are chaotic</h1>
+      <h2>(in Rust + WebAssembly)</h2>
+      <canvas id="canvas" width="960" height="500"></canvas>
+      <p>A remake of <a href="https://bl.ocks.org/travisdoesmath/1206c28b72589d7269b670df05730705">this D3 gist</a> moving the math into wasm for speed (and an excuse to learn
+        <a href="https://rustwasm.github.io/docs/book/">Rust 🦀 and WebAssembly 🕸</a>. The n-tuple pendulum simulator uses the lagrangian formulation of the n-tuple pendulum
+        (with much help from <a href="https://diego.assencio.com/?index=1500c66ae7ab27bb0106467c68feebc6">Diego Assencio's blog post</a>), and is solved numerically with  
+        <a href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods">the classic Runge-Kutta method (RK4)</a>. 
+        Code available on <a href="https://github.com/travisdoesmath/n-pendulum-wasm">GitHub</a>.
+      </p>  
+    </div>
+    <script src="./bootstrap.js"></script>
+  </body>
+</html>
