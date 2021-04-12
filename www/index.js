@@ -36,7 +36,7 @@ let shafts = [];
 let pendulumIndex = 0;
 
 async function init() {
-    let coordsPtr = await pendula.time_step(1/60);
+    let coordsPtr = pendula.time_step(1/60);
     let coordsArray = new Float64Array(memory.buffer, coordsPtr, 2 * nSum);
     for (let i = 0; i < nSum; i++) {
         let x = scale(coordsArray[2*i]);
@@ -62,8 +62,8 @@ async function init() {
     } 
 }   
 
-async function update() {
-    let coordsPtr = await pendula.time_step(1/60);
+function update() {
+    let coordsPtr = pendula.time_step(1/60);
     let coordsArray = new Float64Array(memory.buffer, coordsPtr, 2 * nSum);
 
     for (let i = 0; i < nSum; i++) {

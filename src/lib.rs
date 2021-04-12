@@ -1,11 +1,13 @@
 mod utils;
 
 extern crate nalgebra as na;
+extern crate wasm_bindgen_futures;
 
 use na::{DVector, DMatrix};
 // use serde::{Serialize, Deserialize};
 use std::cmp::max;
 use wasm_bindgen::prelude::*;
+
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -149,7 +151,7 @@ impl Pendula {
         }
     }
 
-    pub async fn time_step(&mut self, dt: f64) -> *const f64 {
+    pub fn time_step(&mut self, dt: f64) -> *const f64 {
         let mut next : Vec<Pendulum> = Vec::new();
 
         for p in &self.pendula {
